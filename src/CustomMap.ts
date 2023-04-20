@@ -2,10 +2,11 @@
 // Instructiomns to every class on how to they can be an argument to 'addMarker'
 interface Mappable {
     name:string,
-location: {
-    lat: number,
-    lng: number,
-}
+    location: {
+        lat: number,
+        lng: number,
+    },
+    markerContent(): string,
 }
 
 export class CustomMap {
@@ -21,14 +22,20 @@ export class CustomMap {
         })
     }
 addMarker(mappable: Mappable):void{
-    new google.maps.Marker({
+  const marker =   new google.maps.Marker({
         map: this.googleMap,
         label: mappable.name,
         position: {
             lat: mappable.location.lat,
             lng: mappable.location.lng,
         }
+    });
+
+    marker.addListener('click',() => {
+        const infoWindow = new google.maps.InfoWindow({
+            content: mappable.markerContent()
+        })
+        infoWindow.open(this.googleMap,marker)
     })
-    
 }
 }
